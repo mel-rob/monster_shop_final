@@ -1,0 +1,15 @@
+<h1>Manage Coupons</h1>
+
+<% if @merchant.coupons.empty? %>
+  <h4>There are no coupons in the system.</h4>
+<% else %>
+  <% @merchant.coupons.each do |coupon| %>
+    <section id="coupon-<%= coupon.id %>">
+      <h4><%= link_to coupon.name %></h4>
+      <ul>
+        <li><b>Percentage off: </b><%= number_to_percentage(coupon.percentage_off, precision: 0) %></li>
+        <li><b>Code: </b><%= coupon.code %></li>
+      </ul>
+    </section>
+  <% end %>
+<% end %>
