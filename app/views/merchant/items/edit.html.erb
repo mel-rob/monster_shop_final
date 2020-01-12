@@ -1,19 +1,21 @@
 <h2>Edit Item</h2>
-<%= form_tag "/merchant/items/#{@item.id}", method: :patch do %>
+<%= form_tag "/merchant/items/#{@item.id}", method: :patch do %><section class='form'>
   <%= label_tag :name %>
-  <%= text_field_tag :name %>
+  <%= text_field_tag :name %><br>
 
   <%= label_tag :description %>
-  <%= text_field_tag :description %>
+  <%= text_field_tag :description %><br>
 
   <%= label_tag :price %>
-  <%= text_field_tag :price %>
+  <%= text_field_tag :price %><br>
 
   <%= label_tag :image %>
-  <%= text_field_tag :image %>
+  <%= text_field_tag :image %><br>
 
   <%= label_tag :inventory %>
-  <%= text_field_tag :inventory %>
+  <%= text_field_tag :inventory %><br></section>
 
   <%= submit_tag 'Update Item' %>
+
+  <!-- <button type="submit" class="btn btn-info">Update Item</button> -->
 <% end %>
