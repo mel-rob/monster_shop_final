@@ -56,7 +56,7 @@ RSpec.describe 'Merchant Item Index' do
         expect(page).to have_content("Inventory: #{@ogre.inventory}")
         expect(page).to have_css("img[src*='#{@ogre.image}']")
         expect(page).to have_link("image")
-        expect(page).to have_button('Inactivate')
+        expect(page).to have_button('Deactivate')
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe 'Merchant Item Index' do
       visit '/merchant/items'
 
       within "#item-#{@ogre.id}" do
-        click_button 'Inactivate'
+        click_button 'Deactivate'
       end
 
       expect(current_path).to eq('/merchant/items')
