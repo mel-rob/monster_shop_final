@@ -5,4 +5,6 @@ class Coupon < ApplicationRecord
                         :percentage_off,
                         :code
 
+  validates_uniqueness_of :name
+  validates_uniqueness_of :code, case_sensitive: false
 end
