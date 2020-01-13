@@ -5,7 +5,8 @@ RSpec.describe Order do
     it {should have_many :order_items}
     it {should have_many(:items).through(:order_items)}
     it {should belong_to :user}
-  end
+    it {should belong_to(:coupon).optional}
+   end
 
   describe 'instance methods' do
     before :each do
