@@ -39,5 +39,26 @@ RSpec.describe 'Coupons show page' do
 
       expect(page).to have_button('Edit')
     end
+
+    it 'When I click on the edit button I am taken to an edit form' do
+
+      visit merchant_coupon_path(@coupon_1)
+
+      click_button 'Edit'
+
+      expect(current_path).to eq(edit_merchant_coupon_path(@coupon_1))
+    end
+
+    it "When I click on the delete button the coupon is deleted" do
+
+      visit merchant_coupon_path(@coupon_1)
+
+      click_button 'Delete'
+
+      expect(current_path).to eq(merchant_coupons_path)
+      expect(page).to_not have_content(@coupon_1.name)
+      expect(page).to_not have_content(number_to_percentage(@coupon_1.percentage_off, precision: 0))
+      expect(page).to_not have_content(@coupon_1.code)
+    end
   end
 end
