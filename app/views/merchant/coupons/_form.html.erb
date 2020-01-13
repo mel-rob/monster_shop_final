@@ -1,15 +1,15 @@
 
-<%= form_tag "/merchant/coupons" do %>
+<%= form_for([current_user.merchant, @coupon]) do |form| %>
 
-  <%= label_tag :name %>
-  <%= text_field_tag :name %><br>
+  <%= form.label :name %>
+  <%= form.text_field :name%>
 
-  <%= label_tag :percentage_off %>
-  <%= text_field_tag :percentage_off %><br>
+  <%= form.label :percentage_off %>
+  <%= form.number_field :percentage_off, min: 0, max: 100 %>
 
-  <%= label_tag :code %>
-  <%= text_field_tag :code %><br>
+  <%= form.label :code %>
+  <%= form.number_field :code %>
 
-  <%= submit_tag 'Submit' %>
+  <%= form.submit 'Submit' %>
 
 <% end %>
