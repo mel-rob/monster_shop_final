@@ -14,7 +14,7 @@ RSpec.describe 'Coupons Index' do
 
     it 'I see a link to create a coupon' do
 
-      visit '/merchant/coupons'
+      visit merchant_coupons_path
 
       expect(page).to have_button('Create Coupon')
     end
@@ -25,19 +25,19 @@ RSpec.describe 'Coupons Index' do
 
       click_button 'Create Coupon'
 
-      expect(current_path).to eq('/merchant/coupons/new')
+      expect(current_path).to eq(new_merchant_coupon_path)
     end
 
     it 'I can fill out the fields to create a new coupon and see a flash message when coupon is created' do
 
       visit '/merchant/coupons/new'
 
-      fill_in :name, with: 'New Customer'
-      fill_in :percentage_off, with: 15
-      fill_in :code, with: 'WELCOME15'
+      fill_in "Name", with: 'New Customer'
+      fill_in "Percentage off", with: 15
+      fill_in "Code", with: 'WELCOME15'
       click_button 'Submit'
 
-      expect(current_path).to eq('/merchant/coupons')
+      expect(current_path).to eq(merchant_coupons_path)
 
       expect(page).to have_content('Coupon created!')
 
@@ -50,49 +50,49 @@ RSpec.describe 'Coupons Index' do
 
       visit '/merchant/coupons/new'
 
-      fill_in :name, with: ''
-      fill_in :percentage_off, with: 15
-      fill_in :code, with: 'WELCOME15'
+      fill_in "Name", with: ''
+      fill_in "Percentage off", with: 15
+      fill_in "Code", with: 'WELCOME15'
       click_button 'Submit'
 
       expect(page).to have_button 'Submit'
       expect(page).to have_content "Name can't be blank"
 
-      fill_in :name, with: 'Welcome New Customer!'
-      fill_in :percentage_off, with: ''
-      fill_in :code, with: 'New10'
+      fill_in "Name", with: 'Welcome New Customer!'
+      fill_in "Percentage off", with: ''
+      fill_in "Code", with: 'New10'
       click_button 'Submit'
 
       expect(page).to have_button 'Submit'
       expect(page).to have_content "Percentage off can't be blank"
 
-      fill_in :name, with: 'Welcome New Customer!'
-      fill_in :percentage_off, with: 10
-      fill_in :code, with: ''
+      fill_in "Name", with: 'Welcome New Customer!'
+      fill_in "Percentage off", with: 10
+      fill_in "Code", with: ''
       click_button 'Submit'
 
       expect(page).to have_button 'Submit'
       expect(page).to have_content "Code can't be blank"
 
-      fill_in :name, with: 'Welcome New Customer!'
-      fill_in :percentage_off, with: 10
-      fill_in :code, with: 'Welcome10'
+      fill_in "Name", with: 'Welcome New Customer!'
+      fill_in "Percentage off", with: 10
+      fill_in "Code", with: 'Welcome10'
       click_button 'Submit'
 
-      expect(current_path).to eq('/merchant/coupons')
+      expect(current_path).to eq(merchant_coupons_path)
       expect(page).to have_content('Coupon created!')
     end
 
     it 'I am unable to create a coupon that has the same name or code as another coupon' do
 
-      visit '/merchant/coupons/new'
+      visit new_merchant_coupon_path
 
-      fill_in :name, with: 'New Customer'
-      fill_in :percentage_off, with: 15
-      fill_in :code, with: 'WELCOME15'
+      fill_in "Name", with: 'New Customer'
+      fill_in "Percentage off", with: 15
+      fill_in "Code", with: 'WELCOME15'
       click_button 'Submit'
 
-      expect(current_path).to eq('/merchant/coupons')
+      expect(current_path).to eq(merchant_coupons_path)
 
       expect(page).to have_content('Coupon created!')
 
@@ -102,17 +102,25 @@ RSpec.describe 'Coupons Index' do
 
       click_button 'Create Coupon'
 
-      fill_in :name, with: 'New Customer'
-      fill_in :percentage_off, with: 10
-      fill_in :code, with: 'WELCOME10'
+      fill_in "Name", with: 'New Customer'
+      fill_in "Percentage off", with: 10
+      fill_in "Code", with: 'WELCOME10'
       click_button 'Submit'
 
       expect(page).to have_button 'Submit'
       expect(page).to have_content 'Name has already been taken'
 
-      fill_in :name, with: 'New Customer 2'
-      fill_in :percentage_off, with: 15
-      fill_in :code, with: 'WELCOME15'
+      fill_in "Name", with: 'New Customer 2'
+      fill_in "Percentage off", with: 15
+      fill_in "Code", with: 'WELCOME15'
+      click_button 'Submit'
+
+      expect(page).to have_button 'Submit'
+      expect(page).to have_content 'Code has already been taken'
+
+      fill_in "Name", with: 'New Customer 2'
+      fill_in "Percentage off", with: 15
+      fill_in "Code", with: 'welcome15'
       click_button 'Submit'
 
       expect(page).to have_button 'Submit'

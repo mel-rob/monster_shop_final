@@ -9,7 +9,7 @@ RSpec.describe Coupon do
   describe 'Validations' do
 
     it {should validate_presence_of :name}
-    it {should validate_uniqueness_of :name}
+    it {should validate_uniqueness_of(:name).ignoring_case_sensitivity}
 
     it {should validate_presence_of :percentage_off}
 

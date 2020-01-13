@@ -19,7 +19,6 @@ ActiveRecord::Schema.define(version: 20200112170825) do
     t.string "name"
     t.decimal "percentage_off"
     t.string "code"
-    t.boolean "active?", default: true
     t.bigint "merchant_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
