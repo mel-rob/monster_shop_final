@@ -1,14 +1,14 @@
 
-<%= form_for([current_user.merchant, @coupon]) do |form| %>
+<%= form_for([current_user.merchant, @coupon]) do |form| %><br>
 
   <%= form.label :name %>
-  <%= form.text_field :name%>
+  <%= form.text_field :name%><br>
 
   <%= form.label :percentage_off %>
-  <%= form.number_field :percentage_off, min: 0, max: 100 %>
+  <%= form.number_field :percentage_off, min: 0, max: 100 %><br>
 
   <%= form.label :code %>
-  <%= form.number_field :code %>
+  <%= form.text_field :code %><br><br>
 
   <%= form.submit 'Submit' %>
 
