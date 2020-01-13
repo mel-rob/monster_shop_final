@@ -66,5 +66,41 @@ RSpec.describe 'Coupons Index' do
         expect(page).to have_content(new_code)
       end
     end
+
+    it 'I am unable to edit a coupon without filling in required fields' do
+
+      visit edit_merchant_coupon_path(@coupon_2)
+
+      new_name = ""
+      new_percentage_off = 10
+      new_code = "NewCode"
+
+      fill_in "Name", with: new_name
+      fill_in "Percentage off", with: new_percentage_off
+      fill_in "Code", with: new_code
+
+      click_button 'Submit'
+
+      expect(page).to have_content("Name can't be blank. Please try again.")
+      expect(page).to have_button('Submit')
+
+      fill_in "Name", with: "New Name"
+      fill_in "Percentage off", with: nil
+      fill_in "Code", with: "New Code"
+
+      click_button 'Submit'
+
+      expect(page).to have_content("Percentage off can't be blank. Please try again.")
+      expect(page).to have_button('Submit')
+
+      fill_in "Name", with: "New Name"
+      fill_in "Percentage off", with: 10
+      fill_in "Code", with: ""
+
+      click_button 'Submit'
+
+      expect(page).to have_content("Code can't be blank. Please try again.")
+      expect(page).to have_button('Submit')
+    end
   end
 end
