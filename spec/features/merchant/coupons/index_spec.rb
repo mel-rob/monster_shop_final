@@ -12,9 +12,20 @@ RSpec.describe 'Coupons Index' do
 
       @coupon_3 = @merchant_2.coupons.create!(name: 'New Customer', percentage_off: 15, code: 'welcome15')
 
+      @default_user = User.create!(name: 'Melissa D.', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'melissad@gmail.com', password: 'password')
+
       @user_1 = @merchant_1.users.create!(name: 'Melissa R.', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'melissar@gmail.com', password: 'password')
       @user_2 = @merchant_2.users.create!(name: 'Melissa M.', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'melissam@gmail.com', password: 'password')
       @user_3 = @merchant_3.users.create!(name: 'Melissa H.', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'melissah@gmail.com', password: 'password')
+
+      @order_item_1 = @merchant_1.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
+      @order_item_2 = @merchant_1.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 10 )
+
+      @order_1 = @default_user.orders.create!
+      @order_item_1 = @order_1.order_items.create!(item: @order_item_1, price: @order_item_1.price, quantity: 2)
+      @order_item_2 = @order_1.order_items.create!(item: @order_item_2, price: @order_item_2.price, quantity: 3)
+
+      @coupon_2.orders << @order_1
     end
 
     it 'I can see an index of all my coupons' do
@@ -54,11 +65,6 @@ RSpec.describe 'Coupons Index' do
         expect(page).to have_button('Edit')
         expect(page).to have_button('Delete')
       end
-
-      within "#coupon-#{@coupon_2.id}" do
-        expect(page).to have_button('Edit')
-        expect(page).to have_button('Delete')
-      end
     end
 
     it "When I click on an individual edit button I am sent to that coupon's edit page" do
@@ -86,6 +92,18 @@ RSpec.describe 'Coupons Index' do
 
       expect(current_path).to eq(merchant_coupons_path)
       expect(page).to_not have_content(@coupon_1.name)
+    end
+
+    it "I don't see delete buttons on coupons that have already been applied" do
+
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_1)
+
+      visit merchant_coupons_path
+
+      within "#coupon-#{@coupon_2.id}" do
+        expect(page).to_not have_button('Delete')
+        expect(page).to have_content('This coupon has been applied and cannot be deleted.')
+      end
     end
   end
 end

@@ -2,6 +2,11 @@
   <ul>
 <li><b>Percentage off:</b> <%= number_to_percentage(@coupon.percentage_off, precision: 0) %> </li>
 <li><b>Code:</b> <%= @coupon.code %> </li>
-  </ul><br>
+  </ul>
 <%= button_to 'Edit', edit_merchant_coupon_path(@coupon.id), method: :get %>
-<%= button_to 'Delete', merchant_coupon_path(@coupon.id), method: :delete %>
+
+<% if @coupon.never_applied? %>
+  <%= button_to 'Delete', merchant_coupon_path(@coupon.id), method: :delete %>
+<% else %>
+  <p>This coupon has been applied and cannot be deleted.</p>
+<% end %>
