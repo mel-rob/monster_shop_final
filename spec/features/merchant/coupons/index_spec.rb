@@ -20,16 +20,16 @@ RSpec.describe 'Coupons Index' do
     it 'I can see an index of all my coupons' do
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_1)
 
-      visit '/merchant/coupons'
+      visit merchant_coupons_path
 
       within "#coupon-#{@coupon_1.id}" do
-        expect(page).to have_content(@coupon_1.name)
+        expect(page).to have_link(@coupon_1.name)
         expect(page).to have_content(number_to_percentage(@coupon_1.percentage_off, precision: 0))
         expect(page).to have_content(@coupon_1.code)
       end
 
       within "#coupon-#{@coupon_2.id}" do
-        expect(page).to have_content(@coupon_2.name)
+        expect(page).to have_link(@coupon_2.name)
         expect(page).to have_content(number_to_percentage(@coupon_2.percentage_off, precision: 0))
         expect(page).to have_content(@coupon_2.code)
       end
@@ -39,9 +39,53 @@ RSpec.describe 'Coupons Index' do
 
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_3)
 
-      visit '/merchant/coupons'
+      visit merchant_coupons_path
 
       expect(page).to have_content('There are no coupons in the system.')
+    end
+
+    it 'I can see a link to edit and delete individual coupons' do
+
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_1)
+
+      visit merchant_coupons_path
+
+      within "#coupon-#{@coupon_1.id}" do
+        expect(page).to have_button('Edit')
+        expect(page).to have_button('Delete')
+      end
+
+      within "#coupon-#{@coupon_2.id}" do
+        expect(page).to have_button('Edit')
+        expect(page).to have_button('Delete')
+      end
+    end
+
+    it "When I click on an individual edit button I am sent to that coupon's edit page" do
+
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_1)
+
+      visit merchant_coupons_path
+
+      within "#coupon-#{@coupon_1.id}" do
+        click_button 'Edit'
+      end
+
+      expect(current_path).to eq(edit_merchant_coupon_path(@coupon_1))
+    end
+
+    it "When I click on an individual delete button the coupon is deleted" do
+
+      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user_1)
+
+      visit merchant_coupons_path
+
+      within "#coupon-#{@coupon_1.id}" do
+        click_button 'Delete'
+      end
+
+      expect(current_path).to eq(merchant_coupons_path)
+      expect(page).to_not have_content(@coupon_1.name)
     end
   end
 end
