@@ -90,7 +90,8 @@ RSpec.describe 'Coupons Index' do
 
       click_button 'Submit'
 
-      expect(page).to have_content("Percentage off can't be blank. Please try again.")
+      expect(page).to have_content("Percentage off can't be blank")
+      expect(page).to have_content("Percentage off is not a number")
       expect(page).to have_button('Submit')
 
       fill_in "Name", with: "New Name"
