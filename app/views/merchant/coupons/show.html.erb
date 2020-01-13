@@ -1,0 +1,6 @@
+<h1><%= @coupon.name %></h1>
+  <ul>
+<li><b>Percentage off:</b> <%= number_to_percentage(@coupon.percentage_off, precision: 0) %> </li>
+<li><b>Code:</b> <%= @coupon.code %> </li>
+  </ul><br>
+<%= button_to 'Edit', edit_merchant_coupon_path(@coupon.id), method: :get %>
