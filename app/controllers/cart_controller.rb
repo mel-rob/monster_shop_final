@@ -1,6 +1,6 @@
 class CartController < ApplicationController
   before_action :exclude_admin
-  
+
   def add_item
     item = Item.find(params[:item_id])
     session[:cart] ||= {}
@@ -36,5 +36,17 @@ class CartController < ApplicationController
     end
     session[:cart] = cart.contents
     redirect_to '/cart'
+  end
+
+  def add_coupon
+    if cart.eligible_coupon?(params[:coupon_code])
+      coupon = Coupon.find_by(code: params[:coupon_code])
+      session[:current_coupon] = coupon
+      redirect_to '/cart'
+      flash[:success] = "#{coupon.code} coupon applied!"
+    else
+      flash[:error] = 'This coupon does not exist or is not valid for these items.'
+      redirect_to '/cart'
+    end
   end
 end
