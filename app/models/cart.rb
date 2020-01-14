@@ -44,6 +44,7 @@ class Cart
     count_of(item_id) == Item.find(item_id).inventory
   end
 
+  # refactor to be more activerecord
   def eligible_coupon?(coupon)
     ids = items.map {|item| item.merchant_id}
     codes = Coupon.where(merchant_id: ids).pluck(:code)
