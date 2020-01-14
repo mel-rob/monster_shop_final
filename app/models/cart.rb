@@ -45,9 +45,33 @@ class Cart
   end
 
   # refactor to be more activerecord
-  def eligible_coupon?(coupon)
+  def eligible_coupon?(code)
     ids = items.map {|item| item.merchant_id}
     codes = Coupon.where(merchant_id: ids).pluck(:code)
     codes.include?(code)
+  end
+
+  def total_discounts(merchant_id, percentage_off)
+    multiplier = (percentage_off.to_i)/100.to_f
+    @contents.sum do |item_id, quantity|
+      item = Item.find(item_id)
+      if item.merchant_id == merchant_id
+        item.price * multiplier * quantity
+      else
+        0
+      end
+    end
+  end
+
+  def discounted_grand_total(merchant_id, percentage_off)
+    multiplier = (100 - percentage_off.to_i)/100.to_f
+    @contents.sum do |item_id, quantity|
+      item = Item.find(item_id)
+      if item.merchant_id == merchant_id
+        item.price * multiplier * quantity
+      else
+        item.price * quantity
+      end
+    end
   end
 end

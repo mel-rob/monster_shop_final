@@ -17,7 +17,6 @@ admin = User.create(name: "Captain Redbeard",
   pollys_exotic_pets = Merchant.create(name: "Polly's Exotic Pets", address: '342 Ocean Breeze', city: 'Bootytown', state: 'Arrrrrkansas', zip: 80203)
   peglegs_pirate_supply = Merchant.create(name: "Pegleg's Pirate Supply", address: '763 Blazing Way', city: 'Ember', state: 'Volcano Island', zip: 80210)
 
-
   # coupons
   coupon_1 = pollys_exotic_pets.coupons.create!(name: "New Customer", percentage_off: 10, code: 'Welcome10')
   coupon_2 = pollys_exotic_pets.coupons.create!(name: "Black Friday", percentage_off: 20, code: 'BlackFriday')
