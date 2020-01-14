@@ -8,7 +8,7 @@ RSpec.describe 'Cart Show Page' do
       @brian = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
 
       @coupon_1 = @megan.coupons.create!(name: 'Black Friday', percentage_off: 20, code: 'BF2019')
-      @coupon_2 = @megan.coupons.create!(name: 'Mega Sale', percentage_off: 10, code: 'Mega10')
+      @coupon_2 = @brian.coupons.create!(name: 'Mega Sale', percentage_off: 10, code: 'Mega10')
 
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
@@ -217,6 +217,56 @@ RSpec.describe 'Cart Show Page' do
 
       expect(page).to have_content('This coupon does not exist or is not valid for these items.')
       expect(page).to have_content('Mega10 coupon currently applied.')
+    end
+
+    it 'When I enter in a coupon code it shows my discounted total' do
+      visit item_path(@ogre)
+      click_button 'Add to Cart'
+      visit item_path(@hippo)
+      click_button 'Add to Cart'
+      visit item_path(@hippo)
+      click_button 'Add to Cart'
+
+      visit '/cart'
+
+      fill_in :coupon_code, with: 'BF2019'
+      click_button 'Submit'
+
+      expect(page).to have_content('BF2019 coupon applied!')
+      expect(page).to have_content('BF2019 coupon currently applied.')
+
+      expect(current_path).to eq('/cart')
+
+      expect(page).to have_content('Subtotal: $120.00')
+      expect(page).to have_content('Total Discounts: -$4.00')
+      expect(page).to have_content('Grand Total: $116.00')
+
+      fill_in :coupon_code, with: 'Mega10'
+      click_button 'Submit'
+
+      expect(page).to have_content('Mega10 coupon applied!')
+      expect(page).to have_content('Mega10 coupon currently applied.')
+
+      expect(page).to have_content('Subtotal: $120.00')
+      expect(page).to have_content('Total Discounts: -$10.00')
+      expect(page).to have_content('Grand Total: $110.00')
+    end
+
+    it "I do not see a discounted total when I enter in a coupon code for items that do not apply" do
+      visit item_path(@ogre)
+      click_button 'Add to Cart'
+
+      visit '/cart'
+
+      fill_in :coupon_code, with: 'Mega10'
+      click_button 'Submit'
+
+      expect(page).to have_content('This coupon does not exist or is not valid for these items.')
+
+      expect(page).to have_content('Subtotal: $20.00')
+      expect(page).to have_content('Grand Total: $20.00')
+
+      expect(page).to_not have_content('Total Discounts:')
     end
   end
 end
