@@ -1,8 +1,7 @@
-<h2>My Cart</h2>
+<h1>My Cart</h1>
 <% if cart.items.empty? %>
   <p>Your Cart is Empty!</p>
 <% else %>
-<h3>Total: <%= number_to_currency(cart.grand_total) %></h3>
   <% cart.items.each do |item| %>
     <section id='item-<%= item.id%>'>
       <h2><%= link_to item.name, "/items/#{item.id}" %></h2>
@@ -15,8 +14,23 @@
       <%= button_to 'Less of This!', "/cart/less/#{item.id}", method: :patch %>
       <%= button_to 'Remove', "/cart/#{item.id}", method: :delete %>
     </section>
-  <% end %>
+  <% end %><br>
+
   <section id='checkout'>
+
+  <%= form_tag '/cart/add_coupon', method: :patch do %>
+    <%= label_tag 'Coupon Code:' %>
+    <%= text_field_tag :coupon_code %>
+    <%= submit_tag 'Submit' %>
+  <% end %>
+  
+  <% if current_coupon %>
+    <p><%= current_coupon.code %> coupon currently applied.</p>
+  <% end %>
+
+  <h3>Total: <%= number_to_currency(cart.grand_total) %></h3>
+
+  <br>
     <% if current_user %>
       <%= button_to 'Check Out', '/orders' %>
     <% else %>
