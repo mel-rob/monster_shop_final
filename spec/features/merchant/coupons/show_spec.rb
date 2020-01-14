@@ -78,8 +78,6 @@ RSpec.describe 'Coupons show page' do
 
       expect(page).to_not have_button('Delete')
       expect(page).to have_content('This coupon has been applied and cannot be deleted.')
-
-      save_and_open_page
     end
   end
 end
