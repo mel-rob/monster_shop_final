@@ -43,4 +43,10 @@ class Cart
   def limit_reached?(item_id)
     count_of(item_id) == Item.find(item_id).inventory
   end
+
+  def eligible_coupon?(coupon)
+    ids = items.map {|item| item.merchant_id}
+    codes = Coupon.where(merchant_id: ids).pluck(:code)
+    codes.include?(code)
+  end
 end
