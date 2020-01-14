@@ -16,6 +16,9 @@
     </section>
   <% end %><br>
 
+  <h3>Subtotal: <%= number_to_currency(cart.grand_total) %></h3><br>
+
+
   <section id='checkout'>
 
   <%= form_tag '/cart/add_coupon', method: :patch do %>
@@ -23,12 +26,14 @@
     <%= text_field_tag :coupon_code %>
     <%= submit_tag 'Submit' %>
   <% end %>
-  
+
   <% if current_coupon %>
     <p><%= current_coupon.code %> coupon currently applied.</p>
+    <h3>Total Discounts: -<%= number_to_currency(cart.total_discounts(current_coupon.merchant_id, current_coupon.percentage_off)) %></h3>
+    <h3>Grand Total: <%= number_to_currency(cart.discounted_grand_total(current_coupon.merchant_id, current_coupon.percentage_off)) %></h3>
+  <% else %>
+    <h3>Grand Total: <%= number_to_currency(cart.grand_total) %></h3>
   <% end %>
-
-  <h3>Total: <%= number_to_currency(cart.grand_total) %></h3>
 
   <br>
     <% if current_user %>
