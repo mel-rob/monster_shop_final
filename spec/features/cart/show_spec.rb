@@ -240,6 +240,29 @@ RSpec.describe 'Cart Show Page' do
       expect(page).to have_content('Subtotal: $120.00')
       expect(page).to have_content('Total Discounts: -$4.00')
       expect(page).to have_content('Grand Total: $116.00')
+    end
+
+    it 'The discounted total changes when I enter in a new eligible code' do
+      visit item_path(@ogre)
+      click_button 'Add to Cart'
+      visit item_path(@hippo)
+      click_button 'Add to Cart'
+      visit item_path(@hippo)
+      click_button 'Add to Cart'
+
+      visit '/cart'
+
+      fill_in :coupon_code, with: 'BF2019'
+      click_button 'Submit'
+
+      expect(page).to have_content('BF2019 coupon applied!')
+      expect(page).to have_content('BF2019 coupon currently applied.')
+
+      expect(current_path).to eq('/cart')
+
+      expect(page).to have_content('Subtotal: $120.00')
+      expect(page).to have_content('Total Discounts: -$4.00')
+      expect(page).to have_content('Grand Total: $116.00')
 
       fill_in :coupon_code, with: 'Mega10'
       click_button 'Submit'

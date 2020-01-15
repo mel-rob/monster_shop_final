@@ -29,4 +29,13 @@ class Item < ApplicationRecord
   def average_rating
     reviews.average(:rating)
   end
+
+  def discounted_price(coupon_merchant_id, percentage_off)
+    multiplier = (100 - percentage_off.to_i)/100.to_f
+    if coupon_merchant_id == merchant_id
+      price * multiplier
+    else
+      price
+    end
+  end
 end

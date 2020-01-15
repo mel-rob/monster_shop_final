@@ -16,6 +16,13 @@ RSpec.describe 'Order Show Page' do
       @order_item_1 = @order_1.order_items.create!(item: @ogre, price: @ogre.price, quantity: 2, fulfilled: true)
       @order_item_2 = @order_2.order_items.create!(item: @giant, price: @hippo.price, quantity: 2, fulfilled: true)
       @order_item_3 = @order_2.order_items.create!(item: @ogre, price: @ogre.price, quantity: 2, fulfilled: false)
+
+      @coupon_1 = @megan.coupons.create!(name: 'Black Friday', percentage_off: 20, code: 'BF2019')
+      @order_3 = @user.orders.create!(status: "pending", coupon_id: @coupon_1.id)
+
+      @order_item_4 = @order_3.order_items.create!(item: @hippo, price: @hippo.discounted_price(@megan.id, @coupon_1.percentage_off), quantity: 2, fulfilled: true)
+      @order_item_5 = @order_3.order_items.create!(item: @ogre, price: @ogre.discounted_price(@megan.id, @coupon_1.percentage_off), quantity: 2, fulfilled: true)
+
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
     end
 
@@ -81,6 +88,16 @@ RSpec.describe 'Order Show Page' do
       expect(@order_item_3.fulfilled).to eq(false)
       expect(@giant.inventory).to eq(5)
       expect(@ogre.inventory).to eq(7)
+    end
+
+    it 'If I used a coupon on an order, I see the coupon used with original subtotal, total discounts, and grand total' do
+      visit "/profile/orders/#{@order_3.id}"
+
+      expect(page).to have_content("Coupon Used: #{@coupon_1.code} - #{number_to_percentage(@coupon_1.percentage_off, precision: 0)} off at #{@megan.name}")
+
+      expect(page).to have_content("Subtotal: #{number_to_currency(@order_3.original_subtotal)}")
+      expect(page).to have_content("Total Discounts: -#{number_to_currency(@order_3.total_discounts)}")
+      expect(page).to have_content("Grand Total: #{number_to_currency(@order_3.discounted_grand_total)}")
     end
   end
 end
