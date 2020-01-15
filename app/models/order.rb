@@ -1,7 +1,7 @@
 class Order < ApplicationRecord
   has_many :order_items
   has_many :items, through: :order_items
-  
+
   belongs_to :user
   belongs_to :coupon, optional: true
 
@@ -13,6 +13,10 @@ class Order < ApplicationRecord
 
   def count_of_items
     order_items.sum(:quantity)
+  end
+
+  def self.coupon
+    Coupon.find(:coupon_id)
   end
 
   def cancel
@@ -43,5 +47,24 @@ class Order < ApplicationRecord
 
   def self.by_status
     order(:status)
+  end
+
+  def original_subtotal
+    order_items
+      .joins("JOIN items ON order_items.item_id = items.id")
+      .sum("items.price * order_items.quantity")
+    end
+
+  def total_discounts
+    original_total =
+    order_items
+      .joins("JOIN items ON order_items.item_id = items.id")
+      .sum("items.price * order_items.quantity")
+    discounted_total = order_items.sum('price * quantity')
+    original_total - discounted_total
+  end
+
+  def discounted_grand_total
+    order_items.sum('price * quantity')
   end
 end
