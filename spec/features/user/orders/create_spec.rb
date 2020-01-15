@@ -9,6 +9,10 @@ RSpec.describe 'Create Order' do
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+
+      @coupon_1 = @megan.coupons.create!(name: 'Black Friday', percentage_off: 20, code: 'BF2019')
+      @coupon_2 = @brian.coupons.create!(name: 'Mega Sale', percentage_off: 10, code: 'Mega10')
+
       @user = User.create!(name: 'Megan', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'megan@example.com', password: 'securepassword')
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
     end
@@ -34,6 +38,50 @@ RSpec.describe 'Create Order' do
       within "#order-#{order.id}" do
         expect(page).to have_link(order.id)
       end
+    end
+
+    it 'I can create an order with a coupon' do
+      visit item_path(@ogre)
+      click_button 'Add to Cart'
+
+      visit '/cart'
+
+      fill_in :coupon_code, with: 'BF2019'
+      click_button 'Submit'
+
+      expect(page).to have_content('BF2019 coupon applied!')
+      expect(page).to have_content('BF2019 coupon currently applied.')
+
+      click_button 'Check Out'
+
+      order = Order.last
+
+      expect(order.coupon_id).to eq(@coupon_1.id)
+    end
+
+    it 'An order gets created with the last valid coupon used' do
+      visit item_path(@ogre)
+      click_button 'Add to Cart'
+
+      visit '/cart'
+
+      fill_in :coupon_code, with: 'BF2019'
+      click_button 'Submit'
+
+      expect(page).to have_content('BF2019 coupon applied!')
+      expect(page).to have_content('BF2019 coupon currently applied.')
+
+      fill_in :coupon_code, with: 'Mega10'
+      click_button 'Submit'
+
+      expect(page).to have_content('This coupon does not exist or is not valid for these items.')
+      expect(page).to have_content('BF2019 coupon currently applied.')
+
+      click_button 'Check Out'
+
+      order = Order.last
+
+      expect(order.coupon_id).to eq(@coupon_1.id)
     end
   end
 
