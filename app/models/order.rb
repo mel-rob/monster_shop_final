@@ -15,8 +15,8 @@ class Order < ApplicationRecord
     order_items.sum(:quantity)
   end
 
-  def self.coupon
-    Coupon.find(:coupon_id)
+  def coupon
+    Coupon.find(coupon_id) if coupon_id 
   end
 
   def cancel
