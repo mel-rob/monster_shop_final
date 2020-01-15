@@ -10,7 +10,7 @@
   <p><b>Total Discounts: </b>-<%= number_to_currency(@order.total_discounts) %></p>
   <p><b>Grand Total: </b><%= number_to_currency(@order.discounted_grand_total) %></p>
 <% else %>
-  <h3>Grand Total: <%= number_to_currency(@order.grand_total) %></h3>
+  <p><b>Grand Total: </b><%= number_to_currency(@order.grand_total) %></p>
 <% end %>
 
 <%= button_to 'Cancel Order', "/profile/orders/#{@order.id}", method: :delete if @order.pending? %>
