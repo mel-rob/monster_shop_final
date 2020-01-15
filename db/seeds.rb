@@ -35,6 +35,17 @@ admin = User.create(name: "Captain Redbeard",
   merchant_id: pollys_exotic_pets.id,
   role: 1)
 
+  # ready-made user account for testing
+  default_user = User.create(name: "Melissa Robbins",
+  address: "123 Ocean Breeze",
+  city: "Bootytown",
+  state: "Turks & Caicos",
+  zip: "13375",
+  email: 'melissa@treasuretrove.com',
+  password: "withoutu",
+  password_confirmation: "withoutu",
+  role: 0)
+
   #pollys_exotic_pets items
   marcel = pollys_exotic_pets.items.create(name: "Marcel", description: "Young and well-behaved capuchin monkey. Skilled at thievary and creating distraction. Looking for a loyal companion and adventurous partner-in-crime.", price: 250, image: "https://www.rainforest-alliance.org/sites/default/files/styles/750w_585h/public/2016-09/capuchin-monkey-baby.jpg?itok=4uOxFicS", inventory: 1)
   iago = pollys_exotic_pets.items.create(name: "Iago", description: "Middle-aged scarlet macaw. Fairly well-trained. Speaks 3 languages and familiar with 2 pirate-based dialects. Best suited for ship life.", price: 350, image: "https://featuredcreature.com/wp-content/uploads/2013/03/scarlet-macaw.jpg", inventory: 1)
