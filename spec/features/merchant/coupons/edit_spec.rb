@@ -52,8 +52,6 @@ RSpec.describe 'Coupons Index' do
       new_code = "NewCode"
 
       fill_in "Name", with: new_name
-      fill_in "Percentage off", with: new_percentage_off
-      fill_in "Code", with: new_code
 
       click_button 'Submit'
 
@@ -62,8 +60,6 @@ RSpec.describe 'Coupons Index' do
 
       within "#coupon-#{@coupon_1.id}" do
         expect(page).to have_content(new_name)
-        expect(page).to have_content(new_percentage_off)
-        expect(page).to have_content(new_code)
       end
     end
 
