@@ -81,6 +81,10 @@ RSpec.describe Order do
     it '.total_discounts' do
       expect(@order_3.total_discounts.round(2)).to eq(8.1)
     end
+
+    it 'coupon' do
+      expect(@order_2.coupon).to eq(@coupon_1)
+    end
   end
 
   describe 'class methods' do
@@ -94,10 +98,6 @@ RSpec.describe Order do
 
     it '.by_status' do
       expect(Order.by_status).to eq([@order_2, @order_1, @order_4, @order_3])
-    end
-
-    it 'coupon' do
-      expect(@order_2.coupon).to eq(@coupon_1)
     end
   end
 end
