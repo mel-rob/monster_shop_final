@@ -12,15 +12,23 @@ RSpec.describe Order do
     before :each do
       @megan = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
       @brian = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
+
+      @coupon_1 = @megan.coupons.create!(name: 'Black Friday', percentage_off: 20, code: 'BF2019')
+
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20.25, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @user = User.create!(name: 'Megan', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218, email: 'megan_1@example.com', password: 'securepassword')
       @order_1 = @user.orders.create!(status: "packaged")
-      @order_2 = @user.orders.create!(status: "pending")
+      @order_2 = @user.orders.create!(status: "pending", coupon_id: @coupon_1.id)
+      @order_3 = @user.orders.create!(status: "pending", coupon_id: @coupon_1.id)
+
       @order_item_1 = @order_1.order_items.create!(item: @ogre, price: @ogre.price, quantity: 5, fulfilled: true)
       @order_item_2 = @order_2.order_items.create!(item: @hippo, price: @hippo.price, quantity: 2, fulfilled: true)
       @order_item_3 = @order_2.order_items.create!(item: @ogre, price: @ogre.price, quantity: 2, fulfilled: false)
+
+      @order_item_4 = @order_3.order_items.create!(item: @hippo, price: @hippo.discounted_price(@megan.id, @coupon_1.percentage_off), quantity: 2, fulfilled: true)
+      @order_item_5 = @order_3.order_items.create!(item: @ogre, price: @ogre.discounted_price(@megan.id, @coupon_1.percentage_off), quantity: 2, fulfilled: true)
     end
 
     it '.grand_total' do
@@ -65,6 +73,14 @@ RSpec.describe Order do
       expect(@order_1.status).to eq('packaged')
       expect(@order_2.status).to eq('pending')
     end
+
+    it '.discounted_grand_total' do
+      expect(@order_3.discounted_grand_total.round(2)).to eq(132.4)
+    end
+
+    it '.total_discounts' do
+      expect(@order_3.total_discounts.round(2)).to eq(8.1)
+    end
   end
 
   describe 'class methods' do
@@ -78,6 +94,10 @@ RSpec.describe Order do
 
     it '.by_status' do
       expect(Order.by_status).to eq([@order_2, @order_1, @order_4, @order_3])
+    end
+
+    it 'coupon' do
+      expect(@order_2.coupon).to eq(@coupon_1)
     end
   end
 end
